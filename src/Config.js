@@ -10,6 +10,8 @@ import type { TableDescription, TableConsumedCapacityDescription, Config } from 
 // - 'min' and 'max' are hard limits
 // - 'minAdjustment' is minimum possible downward adjustment, there is no point
 //   wasting 1 of 4 daily decrements on a small value
+// - 'maxAdjustmentPercent' places a max limit on decrement, can decrement to a new value of  
+//   this percent of current provisioned.  
 
 const config = {
   readCapacity: {
@@ -17,12 +19,13 @@ const config = {
     max: 500,
     increment: {
       thresholdPercent: 80,
-      adjustmentPercent: 120,
+      adjustmentPercent: 125,
       adjustmentUnits: 20,
     },
     decrement: {
       thresholdPercent: 30,
       minAdjustment: 20,
+      maxAdjustmentPercent: 80,
       minGracePeriodAfterLastIncrementMinutes: 60,
       minGracePeriodAfterLastDecrementMinutes: 60,
     },
@@ -32,12 +35,13 @@ const config = {
     max: 200,
     increment: {
       thresholdPercent: 80,
-      adjustmentPercent: 120,
+      adjustmentPercent: 125,
       adjustmentUnits: 20,
     },
     decrement: {
       thresholdPercent: 30,
       minAdjustment: 20,
+      maxAdjustmentPercent: 80,
       minGracePeriodAfterLastIncrementMinutes: 60,
       minGracePeriodAfterLastDecrementMinutes: 60,
     },
@@ -144,7 +148,8 @@ const provisioner = new ConfigurableProvisioner({
       calculateValue: data => {
         invariant(typeof data !== 'undefined', 'Parameter \'data\' is not set');
 
-        return Math.round(Math.max(data.ConsumedThroughput.ReadCapacityUnits,
+        let percentDecrement = Math.round(data.ProvisionedThroughput.ReadCapacityUnits * config.readCapacity.maxAdjustmentPercent / 100); 
+        return Math.round(Math.max(percentDecrement,
           config.readCapacity.min));
       },
     }
@@ -250,7 +255,8 @@ const provisioner = new ConfigurableProvisioner({
       calculateValue: data => {
         invariant(typeof data !== 'undefined', 'Parameter \'data\' is not set');
 
-        return Math.round(Math.max(data.ConsumedThroughput.WriteCapacityUnits,
+        let percentDecrement = Math.round(data.ProvisionedThroughput.WriteCapacityUnits * config.writeCapacity.maxAdjustmentPercent / 100);
+        return Math.round(Math.max(percentDecrement,
           config.writeCapacity.min));
       },
     }
