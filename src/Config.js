@@ -17,7 +17,7 @@ const config = {
     max: 500,
     increment: {
       thresholdPercent: 80,
-      adjustmentPercent: 100,
+      adjustmentPercent: 120,
       adjustmentUnits: 20,
     },
     decrement: {
@@ -32,7 +32,7 @@ const config = {
     max: 200,
     increment: {
       thresholdPercent: 80,
-      adjustmentPercent: 100,
+      adjustmentPercent: 120,
       adjustmentUnits: 20,
     },
     decrement: {
