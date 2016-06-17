@@ -27,6 +27,8 @@ export let handler = async (event: any, context: any) => {
 
     // Load environment variables
     dotenv.config({path: 'config.env'});
+    log('Matching tables with string:', process.env.TABLEFILTER);
+    var tableFilter = process.env.TABLEFILTER;
 
     let db = new DynamoDB(config.connection.dynamoDB);
     let cw = new CloudWatch(config.connection.cloudWatch);
@@ -34,7 +36,24 @@ export let handler = async (event: any, context: any) => {
 
     log('Getting table names');
     let tableNames = await config.getTableNamesAsync(db);
-    let capacityTasks = tableNames
+
+    log('Full list of Dynamo tables:', tableNames);
+
+    //Only keep the tables that match filter string in config.env
+    if (tableFilter !== undefined) {
+      var filtered = [];
+      for (let i=tableNames.length-1; i>=0; i--) {
+        if (tableNames[i].indexOf(tableFilter) !== -1 ) {
+          filtered.push(tableNames[i]);
+        }
+      }
+    } else {
+      log('No string match detected, autoscaling all tables');
+      var filtered = tableNames;
+    }
+    log('Tables after any string matching:', filtered);
+
+    let capacityTasks = filtered
       .map(async tableName => {
 
         log('Getting table description', tableName);

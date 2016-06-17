@@ -27,9 +27,10 @@ export default class Throughput {
     }
 
     let units = Math.round(
-      data.ProvisionedThroughput.ReadCapacityUnits * (adjustmentPercent / 100));
+      data.Consumed.ReadCapacityUnits * (adjustmentPercent / 100) - data.Provisioned.ReadCapacityUnits);
     units = Math.max(units, adjustmentUnits);
     let newValue = data.ProvisionedThroughput.ReadCapacityUnits + units;
+
     return Math.round(Math.max(Math.min(newValue, max), min));
   }
 
@@ -55,8 +56,8 @@ export default class Throughput {
       return Math.round(min);
     }
 
-    let units = Math.round(data.ProvisionedThroughput.WriteCapacityUnits *
-      (adjustmentPercent / 100));
+    let units = Math.round(data.Consumed.WriteCapacityUnits *
+      (adjustmentPercent / 100) - data.Provisioned.ReadCapacityUnits);
 
     units = Math.max(units, adjustmentUnits);
     let newValue = data.ProvisionedThroughput.WriteCapacityUnits + units;

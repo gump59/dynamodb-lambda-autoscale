@@ -13,31 +13,31 @@ import type { TableDescription, TableConsumedCapacityDescription, Config } from 
 
 const config = {
   readCapacity: {
-    min: 1,
-    max: 10,
+    min: 11,
+    max: 500,
     increment: {
-      thresholdPercent: 90,
+      thresholdPercent: 80,
       adjustmentPercent: 100,
-      adjustmentUnits: 3,
+      adjustmentUnits: 20,
     },
     decrement: {
       thresholdPercent: 30,
-      minAdjustment: 3,
+      minAdjustment: 20,
       minGracePeriodAfterLastIncrementMinutes: 60,
       minGracePeriodAfterLastDecrementMinutes: 60,
     },
   },
   writeCapacity: {
-    min: 1,
-    max: 10,
+    min: 21,
+    max: 200,
     increment: {
-      thresholdPercent: 90,
+      thresholdPercent: 80,
       adjustmentPercent: 100,
-      adjustmentUnits: 3,
+      adjustmentUnits: 20,
     },
     decrement: {
       thresholdPercent: 30,
-      minAdjustment: 3,
+      minAdjustment: 20,
       minGracePeriodAfterLastIncrementMinutes: 60,
       minGracePeriodAfterLastDecrementMinutes: 60,
     },

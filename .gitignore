@@ -35,4 +35,4 @@ node_modules
 dist/
 dist.zip
 build/
-config.env.production
+config.env*

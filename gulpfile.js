@@ -39,7 +39,7 @@ gulp.task('npm', function() {
 // Next copy over environment variables managed outside of source control.
 gulp.task('env', function() {
   return gulp
-    .src('./config.env.production')
+    .src('./config.env')
     .pipe(rename('config.env'))
     .pipe(gulp.dest('./dist'));
 });
