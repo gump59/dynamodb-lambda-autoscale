@@ -121,11 +121,14 @@ export default class CapacityCalculator {
       return 0;
     }
 
+    // Modified as per feedback from AWS - don't use average, it is reads / request average
     // Default algorithm for projecting a good value for the current ConsumedThroughput is:
-    // 1. Query 5 average readings each spanning a minute
+    // 1. Query 5 sum readings each spanning a minute
     // 2. Select the Max value from those 5 readings
-    let averages = data.Datapoints.map(dp => dp.Average);
-    let value = Math.max(...averages);
+    // 3. Devide by 60 seconds to obtain consumed read units / second 
+    let sum = data.Datapoints.map(dp => dp.Sum);
+    let max = Math.max(...sum);
+    let value = sum / 60 
     return value;
   }
 
