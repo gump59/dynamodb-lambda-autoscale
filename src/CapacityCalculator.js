@@ -1,5 +1,5 @@
 /* @flow */
-import { json, stats, warning, invariant } from './Global';
+import { json, stats, log, warning, invariant } from './Global';
 import CloudWatch from './CloudWatch';
 import type {
   TableDescription, GetMetricStatisticsResponse, Dimension,
@@ -95,7 +95,7 @@ export default class CapacityCalculator {
         StartTime,
         EndTime,
         Period: (periodMinutes * 60),
-        Statistics: [ 'Average' ],
+        Statistics: [ 'Sum' ],
         Unit: 'Count'
       };
 
@@ -125,10 +125,13 @@ export default class CapacityCalculator {
     // Default algorithm for projecting a good value for the current ConsumedThroughput is:
     // 1. Query 5 sum readings each spanning a minute
     // 2. Select the Max value from those 5 readings
-    // 3. Devide by 60 seconds to obtain consumed read units / second 
+    // 3. Divide by 60 seconds to obtain consumed read units / second 
     let sum = data.Datapoints.map(dp => dp.Sum);
+    // log('sum:', sum);
     let max = Math.max(...sum);
-    let value = sum / 60 
+    // log('max:', max);
+    let value = (max / 60); 
+    // log('value:', value);
     return value;
   }
 
